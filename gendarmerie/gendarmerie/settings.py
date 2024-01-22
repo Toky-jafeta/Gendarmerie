@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'auteurs',
     'victimes',
-    'problemes_sociaux'
+    'problemes_sociaux',
+    'divers',
+    'proces_verbaux'
 ]
 
 MIDDLEWARE = [
