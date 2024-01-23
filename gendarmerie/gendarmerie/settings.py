@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'victimes',
     'problemes_sociaux',
     'divers',
-    'proces_verbaux'
+    'proces_verbaux',
+    'localization'
 ]
 
 MIDDLEWARE = [
