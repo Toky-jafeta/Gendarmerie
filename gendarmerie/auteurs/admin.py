@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from auteurs.models import Auteur
+
+admin.site.register(Auteur)

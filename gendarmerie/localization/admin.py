@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from localization.models import Geolocalization
+
+admin.site.register(Geolocalization)

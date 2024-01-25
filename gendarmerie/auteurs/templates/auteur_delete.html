@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Créer auteur{% endblock %}
+
+{% block content %}
+    <h1>Supprimé une auteur potentielle</h1>
+    <p>Etes vous sur de vouloir supprimer {{ auteur.name }} ?</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Supprimé"/>
+        <a href="{% url 'auteur-list' %}"><input type="button" value="annuler"/></a>
+    </form>
+{% endblock %}

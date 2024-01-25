@@ -20,5 +20,10 @@ from auteurs import views as auteur
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('create_auteur/', auteur.auteur_create, name='auteur-create')
+    path('auteur/', auteur.auteur_list, name='auteur-list'),
+    path('auteur/create_auteur/', auteur.auteur_create, name='auteur-create'),
+    path('auteur/<int:id>/', auteur.auteur_retrieve, name='auteur-details'),
+    path('auteur/<int:id>/update/', auteur.auteur_update, name='auteur-update'),
+    path('auteur/<int:id>/delete/', auteur.auteur_destroy, name='auteur-delete'),
+    path('auteur/statistiques/', auteur.auteur_statistique, name='auteur-statistiques'),
 ]

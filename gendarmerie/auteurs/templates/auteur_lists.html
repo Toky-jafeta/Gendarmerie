@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Lite des auteurs{% endblock %}
+
+{% block content %}
+    <h1>Liste des auteurs potentielles</h1>
+    <ul>
+        {% for auteur in auteurs %}
+            <li>{{ auteur.name }} <a href="{% url 'auteur-update' auteur.id %}">Modifier</a> <a href="{% url 'auteur-delete' auteur.id %}">Supprimer</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
