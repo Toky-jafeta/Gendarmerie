@@ -5,34 +5,40 @@
     <title>{% block title %} {% endblock %}</title>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li>
-                <a href="#">Fiche</a>
-                <ul>
-                    <li>
-                        <a href="{% url 'auteur-statistiques' %}">Auteur potentielle</a>
-                        <ul>
-                            <li><a href="{% url 'auteur-create' %}">Créer</a></li>
-                            <li><a href="{% url 'auteur-list' %}">Listé</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">PV</a>
-            </li>
-            <li>
-                <a href="#">Fait saillant</a>
-            </li>
-            <li>
-                <a href="#">Désignation journalière</a>
-            </li>
-            <li>
-                <a href="#">Divers</a>
-            </li>
-        </ul>
-    </nav>
+    {% if user.is_authenticated %}
+        <nav>
+            <ul>
+                <li>
+                    <a href="#">Fiche</a>
+                    <ul>
+                        <li>
+                            <a href="{% url 'auteur-statistiques' %}">Auteur potentielle</a>
+                            <ul>
+                                <li><a href="{% url 'auteur-create' %}">Créer</a></li>
+                                <li><a href="{% url 'auteur-list' %}">Listé</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">PV</a>
+                </li>
+                <li>
+                    <a href="#">Fait saillant</a>
+                </li>
+                <li>
+                    <a href="#">Désignation journalière</a>
+                </li>
+                <li>
+                    <a href="#">Divers</a>
+                </li>
+                <li>
+                    <a href="{% url 'logout' %}">Se deconnécté</a>
+                </li>
+
+            </ul>
+        </nav>
+    {% endif %}
     {% block content %}{% endblock %}
 </body>
 </html>

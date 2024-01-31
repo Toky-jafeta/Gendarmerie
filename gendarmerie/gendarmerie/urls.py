@@ -17,9 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from auteurs import views as auteur
+from authentication import views as authentication
+from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', LoginView.as_view(
+        template_name='login.html',
+        redirect_authenticated_user=True
+    ), name='login'),
+    path('signup/', authentication.SignupView.as_view(), name='signup'),
+    path('logout/', authentication.LogoutView, name='logout'),
     path('auteur/', auteur.auteur_list, name='auteur-list'),
     path('auteur/create_auteur/', auteur.auteur_create, name='auteur-create'),
     path('auteur/<int:id>/', auteur.auteur_retrieve, name='auteur-details'),
