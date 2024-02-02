@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'divers',
     'proces_verbaux',
     'localization',
-    "authentication"
+    "authentication",
+    'pictures'
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,7 @@ AUTH_USER_MODEL = 'authentication.User'
 LOGIN_URL = 'login'
 
 LOGIN_REDIRECT_URL = 'auteur-statistiques'
+
+MEDIA = '/media/'
+
+MEDIA_ROOT = 'media/'

@@ -6,6 +6,8 @@
     <form method="post">
         {% csrf_token %}
         {{ auteur_form.as_p }}
+        {{ geolocalisation_form.as_p }}
+        {{ upload_image_forms.as_p }}
         <input type="submit" value="Envoyé"/>
     </form>
 {% endblock %}

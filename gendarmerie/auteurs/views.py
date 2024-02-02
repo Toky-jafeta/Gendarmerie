@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
 
 from auteurs.forms import AuteurForms
 from auteurs.models import Auteur
 
 from localization.models import Geolocalization
+from localization.forms import GeolocalizationForms
+from pictures.forms import ImageForm
+
 
 @login_required
 def auteur_statistique(request):
@@ -22,59 +26,54 @@ def auteur_list(request):
 
 @login_required
 def auteur_create(request):
+    auteur_form = AuteurForms()
+    geolocalisation_form = GeolocalizationForms()
+    upload_image_form_set = formset_factory(ImageForm, extra=5)
+    upload_image_forms = upload_image_form_set()
     if request.method == "POST":
         auteur_form = AuteurForms(request.POST)
+        geolocalisation_form = GeolocalizationForms(request.POST)
         if auteur_form.is_valid():
-            auteur = auteur_form.save()
-            if auteur_form.cleaned_data['geolocalisation_latitude'] is not None and auteur_form.cleaned_data['geolocalisation_longitude'] is not None:
-                latitude = auteur_form.cleaned_data['geolocalisation_latitude']
-                longitude = auteur_form.cleaned_data['geolocalisation_longitude']
-                geolocalisation = Geolocalization.objects.create(
-                    latitude=latitude,
-                    longitude=longitude
-                )
-                auteur.geolocalisation = geolocalisation
-                auteur.save()
-            return redirect('auteur-details', auteur.id)
-    else:
-        auteur_form = AuteurForms()
+            auteur = auteur_form.save(commit=False)
 
-    return render(request, 'auteurs_create.html', {"auteur_form": auteur_form})
+            if geolocalisation_form.is_valid():
+                geolocalisation = geolocalisation_form.save()
+                auteur.geolocalisation = geolocalisation
+
+            for form in upload_image_forms:
+                if form.cleaned_data:
+                    photo = form.save(commit=False)
+                    photo.uploader = request.user
+                    photo.save()
+
+            auteur.save()
+            return redirect('auteur-details', auteur.id)
+
+    return render(request, 'auteurs_create.html', {"auteur_form": auteur_form, "geolocalisation_form": geolocalisation_form, "upload_image_forms": upload_image_forms})
 
 @login_required
 def auteur_update(request, id):
     auteur = Auteur.objects.get(id=id)
+    auteur_form = AuteurForms(instance=auteur)
+    geolocalisation, geolocalisation_form = None, None
+    if auteur.geolocalisation:
+        geolocalisation = Geolocalization.objects.get(id=auteur.geolocalisation.id)
+        geolocalisation_form = GeolocalizationForms(instance=geolocalisation)
 
     if request.method == "POST":
         auteur_form = AuteurForms(request.POST, instance=auteur)
-
+        geolocalisation_form = GeolocalizationForms(request.POST, instance=geolocalisation)
         if auteur_form.is_valid():
-            auteur = auteur_form.save()
-            latitude = auteur_form.cleaned_data['geolocalisation_latitude']
-            longitude = auteur_form.cleaned_data['geolocalisation_longitude']
-            geolocalisation = auteur.geolocalisation
-            if latitude is not "  " and longitude is not "  " and geolocalisation is not None:
-                geo = Geolocalization.objects.get(id=geolocalisation.id)
-                geo.delete()
+            auteur = auteur_form.save(commit=False)
+            if geolocalisation_form.is_valid():
+                geolocalisation = geolocalisation_form.save()
+                auteur.geolocalisation = geolocalisation
 
-            elif latitude is not None and longitude is not None and geolocalisation is not None:
-                geo = Geolocalization.objects.get(id=geolocalisation.id)
-                geo.latitude = latitude
-                geo.longitude = longitude
-                geo.save()
-            elif latitude is not None and longitude is not None and geolocalisation is None:
-                geo = Geolocalization.objects.create(
-                    latitude=latitude,
-                    longitude=longitude
-                )
-                auteur.geolocalisation = geo
-                auteur.save()
+            auteur.save()
 
             return redirect('auteur-details', auteur.id)
-    else:
-        auteur_form = AuteurForms(instance=auteur)
 
-    return render(request, 'auteur_update.html', {"auteur_form": auteur_form})
+    return render(request, 'auteur_update.html', {"auteur_form": auteur_form, "geolocalisation_form": geolocalisation_form})
 
 @login_required
 def auteur_destroy(request, id):

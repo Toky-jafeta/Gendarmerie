@@ -7,6 +7,12 @@
 <body>
     {% if user.is_authenticated %}
         <nav>
+            {% if user.profile_photo %}
+                <p><img src="{{ user.profile_photo.image.url }}"/></p>
+                <a href="{% url 'upload-images' %}">Modifier Photo de profile</a>
+            {% elif not user.profile_photo %}
+                <a href="{% url 'upload-images' %}">Ajouter Photo de profile</a>
+            {% endif %}
             <ul>
                 <li>
                     <a href="#">Fiche</a>
@@ -28,6 +34,9 @@
                 </li>
                 <li>
                     <a href="#">Désignation journalière</a>
+                    <ul>
+                        <li><a href="{% url 'user-list' %}">Liste des personnelles</a></li>
+                    </ul>
                 </li>
                 <li>
                     <a href="#">Divers</a>
@@ -38,6 +47,9 @@
 
             </ul>
         </nav>
+        <section>
+            <h1>Vous etes connécté en tant que {{ user.username }}</h1>
+        </section>
     {% endif %}
     {% block content %}{% endblock %}
 </body>

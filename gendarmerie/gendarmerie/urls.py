@@ -16,9 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from auteurs import views as auteur
 from authentication import views as authentication
 from django.contrib.auth.views import LoginView
+from pictures import views as image
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,4 +38,11 @@ urlpatterns = [
     path('auteur/<int:id>/update/', auteur.auteur_update, name='auteur-update'),
     path('auteur/<int:id>/delete/', auteur.auteur_destroy, name='auteur-delete'),
     path('auteur/statistiques/', auteur.auteur_statistique, name='auteur-statistiques'),
+    path('upload_images/', image.ImageView.as_view(), name="upload-images"),
+    path('user_list/', authentication.list_user, name="user-list")
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

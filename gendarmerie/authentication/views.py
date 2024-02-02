@@ -3,10 +3,11 @@ from django.contrib.auth import login, authenticate, logout
 from django.views.generic import View
 from django.conf import settings
 
-# Create your views here.
-from authentication.forms import LoginForm
+from authentication.forms import LoginForm, SignupForm
 
-from authentication.forms import SignupForm
+from pictures.forms import ImageForm
+
+from authentication.models import User
 
 
 class LoginView(View):
@@ -46,14 +47,28 @@ class SignupView(View):
 
     def get(self, request):
         form = self.form_class()
-        return render(request, self.template_name, {"form": form})
+        profile_picture = ImageForm()
+        return render(request, self.template_name, {"form": form, "profile_picture": profile_picture})
 
     def post(self, request):
         form = self.form_class(request.POST)
+        profile_photo = ImageForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            if profile_photo.is_valid():
+                user.save()
+                image_instance = profile_photo.save(commit=False)
+                image_instance.uploader = user
+                image_instance.save()
+                user.profile_photo = image_instance
+            user.save()
             login(request, user)
             return redirect(settings.LOGIN_REDIRECT_URL)
 
         return render(request, self.template_name, {"form": form})
 
+
+def list_user(request):
+    users = User.objects.all()
+
+    return render(request, 'user_list.html', {"users": users})

@@ -3,8 +3,13 @@
 {% block title %}S'inscrire{% endblock %}
 
 {% block content %}
-    <form method="POST">
+    <p><a href="{% url 'login' %}">retour à la page de connexion</a></p>
+    <h1>Merci de remplir les informations d'inscription</h1>
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        <h4>Inserer une image de profile : </h4>
+        {{ profile_picture.as_p }}
+        <h4>Remplissez les informations suivantes : </h4>
         {{ form.as_p }}
         <input type="submit" value="S'inscrire"/>
     </form>
